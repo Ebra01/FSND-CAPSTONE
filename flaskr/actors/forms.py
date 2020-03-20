@@ -42,4 +42,3 @@ class ActorsForm(FlaskForm):
                  ('male', 'Male'),
                  ('female', 'Female')]
     )
-

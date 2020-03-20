@@ -51,7 +51,8 @@ def get_token_auth_header():
         if parts[0].lower() != 'bearer':
             raise AuthError({
                 'code': 'Invalid Header',
-                'description': 'Authorization header must start with "Bearer".'
+                'description': 'Authorization header'
+                               ' must start with "Bearer".'
             }, 401)
 
         elif len(parts) == 1:
@@ -63,7 +64,8 @@ def get_token_auth_header():
         elif len(parts) > 2:
             raise AuthError({
                 'code': 'Invalid Header',
-                'description': 'Authorization header must be bearer token.'
+                'description': 'Authorization header'
+                               ' must be bearer token.'
             }, 401)
 
         token = parts[1]
@@ -80,7 +82,8 @@ def get_token_auth_header():
                     "code": "Authorization Header Missing",
                     "description":
                         "Authorization header is expected"}, 401)
-        except:
+        except Exception as e:
+            print(e)
             raise AuthError({
                 "code": "Authorization Header Missing",
                 "description":

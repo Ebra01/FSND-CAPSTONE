@@ -64,7 +64,8 @@ class Movies(db.Model):
         self.availability = availability
 
     def __repr__(self):
-        return f"Title: {self.title}, Release Date: {self.release_date}, Availability: {self.availability}"
+        return f"Title: {self.title}, Release Date: {self.release_date}," \
+               f" Availability: {self.availability}"
 
     def display(self):
         return {

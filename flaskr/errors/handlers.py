@@ -76,4 +76,5 @@ def authentification_failed(autherror):
         }), status_code
 
     else:
-        return render_template('errors/authError.html', error=error, status_code=status_code)
+        return render_template('errors/authError.html',
+                               error=error, status_code=status_code)

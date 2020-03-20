@@ -1,12 +1,14 @@
 import os
-from flask import Blueprint, session, redirect, url_for, render_template, flash
+from flask import (Blueprint, session, redirect,
+                   url_for, render_template, flash)
 from six.moves.urllib.parse import urlencode
 from auth0.v3.authentication import GetToken
 from auth0.v3.management.users import Users as UserManagement
 from flaskr.users.forms import LoginForm, RegistrationForm
 from flask_login import login_user, current_user, logout_user
 from flaskr.models.models import JWT, Users
-from flaskr import oauth, bcrypt, login_manager, DOMAIN, CLIENT_SECRET, CLIENT_ID, SCOPE, AUDIENCE
+from flaskr import (oauth, bcrypt, login_manager, DOMAIN,
+                    CLIENT_SECRET, CLIENT_ID, SCOPE, AUDIENCE)
 
 users = Blueprint("users", __name__)
 get_token = GetToken(DOMAIN)
@@ -43,9 +45,13 @@ def login():
 
         try:
 
-            token = get_token.login(client_id=CLIENT_ID, client_secret=CLIENT_SECRET,
-                                    username=email, password=password, scope=SCOPE,
-                                    audience=AUDIENCE, realm='Username-Password-Authentication')
+            token = get_token.login(client_id=CLIENT_ID,
+                                    client_secret=CLIENT_SECRET,
+                                    username=email,
+                                    password=password, scope=SCOPE,
+                                    audience=AUDIENCE,
+                                    realm='Username-Password-Authentication')
+
             access_token = token['access_token']
 
             try:
@@ -131,7 +137,8 @@ def logout():
     logout_user()
 
     # Redirect user to logout endpoint
-    params = {'returnTo': url_for('main.home', _external=True), 'client_id': CLIENT_ID}
+    params = {'returnTo': url_for('main.home', _external=True),
+              'client_id': CLIENT_ID}
     return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))
 
 
@@ -140,7 +147,8 @@ def add_user_to_db(email, password):
     registered_users = [u.display() for u in registered_users]
     registered_emails = [u['email'] for u in registered_users]
     if email not in registered_emails:
-        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+        hashed_password = bcrypt.generate_password_hash(
+            password).decode('utf-8')
         new_user = Users(
             email=email,
             password=hashed_password
@@ -160,7 +168,6 @@ def validate_current_user(email, password, remember):
 
 def register_to_auth(body):
     # Generate Api Management TOKEN
-    # api_token = get_token.client_credentials(CLIENT_ID, CLIENT_SECRET, AUDIENCE)
     api_token = os.getenv('API_TOKEN')
     # Create User management from auth0.v3.management
     userManagement = UserManagement(DOMAIN, api_token)

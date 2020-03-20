@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms.validators import (DataRequired, Length, Email,
+                                EqualTo, ValidationError)
 from flaskr.models.models import Users
 
 
@@ -28,7 +29,8 @@ class RegistrationForm(FlaskForm):
                              validators=[DataRequired(), Length(min=8)])
     confirm_password = PasswordField('Confirm Password',
                                      validators=[DataRequired(),
-                                                 Length(min=8), EqualTo('password')])
+                                                 Length(min=8),
+                                                 EqualTo('password')])
     submit = SubmitField('Sign Up')
 
     def validate_password(self, password):
@@ -36,14 +38,18 @@ class RegistrationForm(FlaskForm):
         passw = password.data
 
         if not any(p.isupper() for p in passw):
-            raise ValidationError('Password must have at least one uppercase.')
+            raise ValidationError(
+                'Password must have at least one uppercase.')
         if not any(p.islower() for p in passw):
-            raise ValidationError('Password must have at least one lowercase.')
+            raise ValidationError(
+                'Password must have at least one lowercase.')
         if not any(p.isdigit() for p in passw):
-            raise ValidationError('Password must have at least one digit.')
+            raise ValidationError(
+                'Password must have at least one digit.')
 
     def validate_email(self, email):
         user = Users.query.filter_by(email=email.data).first()
 
         if user:
-            raise ValidationError('Email already registered, Pleace choose another one')
+            raise ValidationError(
+                'Email already registered, Pleace choose another one')

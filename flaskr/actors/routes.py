@@ -1,4 +1,5 @@
-from flask import Blueprint, abort, redirect, url_for, make_response, render_template, jsonify, request, flash
+from flask import (Blueprint, abort, redirect, url_for,
+                   make_response, render_template, jsonify, request, flash)
 from flaskr.models.models import Actors
 from flaskr.auth.auth import requires_auth
 from .forms import ActorsForm
@@ -35,7 +36,8 @@ def get_actors(payload):
                 actors.append(items)
             else:
                 actresses.append(items)
-        return render_template('pages/actors.html', title='Actors', actors=actors, actresses=actresses)
+        return render_template('pages/actors.html', title='Actors',
+                               actors=actors, actresses=actresses)
 
 
 @actor.route('/actors/<int:actor_id>')
@@ -57,7 +59,8 @@ def get_actor(payload, actor_id):
                 'success': True
             })
         else:
-            return render_template('pages/actor.html', title=f'{current["name"]}', actor=current)
+            return render_template('pages/actor.html',
+                                   title=f'{current["name"]}', actor=current)
     except Exception as e:
         print(e)
         abort(422)
@@ -179,7 +182,8 @@ def update_actors(payload, actor_id):
 @requires_auth(permission='post:actors')
 def create_actors_form(payload):
     form = ActorsForm()
-    return render_template('forms/new_actor.html', form=form, title='New Actor')
+    return render_template('forms/new_actor.html', form=form,
+                           title='New Actor')
 
 
 @actor.route('/actors/create', methods=['POST'])
@@ -197,9 +201,11 @@ def create_actors_submission(payload):
 
             a.insert()
             if request.form['gender'] == 'male':
-                flash(f'Actor {name} has been listed successfully!', 'success')
+                flash(f'Actor {name} has been listed successfully!',
+                      'success')
             else:
-                flash(f'Actress {name} has been listed successfully!', 'success')
+                flash(f'Actress {name} has been listed successfully!',
+                      'success')
             return redirect(url_for('actors.get_actors'))
         except Exception as e:
             print(e)
@@ -211,7 +217,8 @@ def create_actors_submission(payload):
             error = 'Name must be a string'
         flash(f'Unable to create a new actor ({error}) !', 'warning')
 
-    return render_template('forms/new_actor.html', title='New Actor', form=form)
+    return render_template('forms/new_actor.html',
+                           title='New Actor', form=form)
 
 
 @actor.route('/actors/<int:actor_id>/edit', methods=['GET'])
@@ -236,7 +243,9 @@ def update_actors_form(payload, actor_id):
         form.last_name.data = last_name
         form.age.data = current['age']
 
-        return render_template('forms/edit_actor.html', form=form, actor=current, title=f'Edit - {current["name"]}')
+        return render_template('forms/edit_actor.html', form=form,
+                               actor=current,
+                               title=f'Edit - {current["name"]}')
 
     except Exception as e:
         print(e)
@@ -270,11 +279,14 @@ def update_actors_submission(payload, actor_id):
             return redirect(url_for('actors.get_actor', actor_id=actor_id))
         else:
             if request.form['gender'] == 'male':
-                flash(f'An error occurred. Actor {current["name"]} could not be updated!', 'warning')
+                flash(f'An error occurred. Actor {current["name"]}'
+                      f' could not be updated!', 'warning')
             else:
-                flash(f'An error occurred. Actress {current["name"]} could not be updated!', 'warning')
+                flash(f'An error occurred. Actress {current["name"]}'
+                      f' could not be updated!', 'warning')
 
-        return render_template('forms/edit_actor.html', actor=current, form=form, title=f'Edit - {name}')
+        return render_template('forms/edit_actor.html', actor=current,
+                               form=form, title=f'Edit - {name}')
     except Exception as e:
         print(e)
         abort(422)

@@ -12,7 +12,8 @@ class MoviesForm(FlaskForm):
     def validate_release_date(self, release_date):
         rd = release_date.data
         if not datetime.strptime(rd, '%Y-%m-%d %H:%M'):
-            raise ValidationError("Release Date must be a DateTime(YYYY-MM-DD HH:MM)")
+            raise ValidationError(
+                "Release Date must be a DateTime(YYYY-MM-DD HH:MM)")
 
     title = StringField(
         'title', validators=[DataRequired()]
@@ -21,4 +22,3 @@ class MoviesForm(FlaskForm):
     release_date = StringField(
         'release_date', validators=[DataRequired()],
     )
-

@@ -1,4 +1,5 @@
-from flask import Blueprint, abort, flash, url_for, redirect, render_template, jsonify, request
+from flask import (Blueprint, abort, flash, url_for,
+                   redirect, render_template, jsonify, request)
 from flaskr.models.models import Movies
 from flaskr.auth.auth import requires_auth
 from .forms import MoviesForm
@@ -56,7 +57,8 @@ def get_movies(payload):
                 in_movies.append(items)
 
         return render_template('pages/movies.html', title='Movies',
-                               up_movies=up_movies, in_movies=in_movies, od_movies=od_movies)
+                               up_movies=up_movies,
+                               in_movies=in_movies, od_movies=od_movies)
 
 
 @movie.route('/movies/<int:movie_id>')
@@ -78,7 +80,8 @@ def get_movie(payload, movie_id):
                 'success': True
             })
         else:
-            return render_template('pages/movie.html', title=f'{current["title"]}', movie=current)
+            return render_template('pages/movie.html',
+                                   title=f'{current["title"]}', movie=current)
     except Exception as e:
         print(e)
         abort(422)
@@ -194,7 +197,8 @@ def update_movies(payload, movie_id):
 @requires_auth(permission='post:movies')
 def create_movies_form(payload):
     form = MoviesForm()
-    return render_template('forms/new_movie.html', form=form, title='New Movie')
+    return render_template('forms/new_movie.html',
+                           form=form, title='New Movie')
 
 
 @movie.route("/movies/create", methods=['POST'])
@@ -211,16 +215,18 @@ def create_movies_submission(payload):
             availability=availability
         )
         m.insert()
-        flash(f'Movie {request.form["title"]} was successfully listed!', 'success')
+        flash(f'Movie {request.form["title"]} was successfully listed!',
+              'success')
         return redirect(url_for('movies.get_movies'))
     else:
         if 'title' in form.errors:
             error = 'Title must be a String'
         else:
-            error = 'Release Date must be a DateTime(YYYY-MM-DD HH-MM) '
+            error = 'Release Date must be a DateTime(YYYY-MM-DD HH-MM)'
         flash(f'Unable to create a new movie ({error}) !', 'warning')
 
-    return render_template('forms/new_movie.html', form=form, title='New Movie')
+    return render_template('forms/new_movie.html', form=form,
+                           title='New Movie')
 
 
 @movie.route('/movies/<int:movie_id>/edit', methods=['GET'])
@@ -235,9 +241,12 @@ def update_movies_form(payload, movie_id):
     try:
         current = movie_.display()
         form.title.data = current['title']
-        form.release_date.data = current['release_date'].strftime('%Y-%m-%d %H:%M')
+        form.release_date.data = current['release_date'].strftime(
+            '%Y-%m-%d %H:%M')
 
-        return render_template('forms/edit_movie.html', form=form, movie=current, title=f'Edit - {current["title"]}')
+        return render_template('forms/edit_movie.html',
+                               form=form, movie=current,
+                               title=f'Edit - {current["title"]}')
 
     except Exception as e:
         print(e)
@@ -259,15 +268,20 @@ def update_movies_submission(payload, movie_id):
         if form.validate_on_submit():
             movie_.title = request.form['title']
             movie_.release_date = request.form['release_date']
-            movie_.availability = get_availability(request.form['release_date'])
+            movie_.availability = get_availability(
+                request.form['release_date'])
             movie_.update()
 
-            flash(f'Movie {request.form["title"]} was successfully updated!', 'success')
+            flash(f'Movie {request.form["title"]} was successfully updated!',
+                  'success')
             return redirect(url_for('movies.get_movie', movie_id=movie_id))
         else:
-            flash(f'An error occurred. Movie {current["title"]} could not be updated!', 'warning')
+            flash(f'An error occurred. Movie {current["title"]}'
+                  f' could not be updated!', 'warning')
 
-        return render_template('forms/edit_movie.html', form=form, movie=current, title=f'Edit - {current["title"]}')
+        return render_template('forms/edit_movie.html',
+                               form=form, movie=current,
+                               title=f'Edit - {current["title"]}')
     except Exception as e:
         print(e)
         abort(422)
