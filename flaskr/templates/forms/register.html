@@ -1,0 +1,62 @@
+{% extends 'layouts/layout.html' %}
+{% block optstyles %}
+    .ml-special {
+        margin: auto;
+        margin-left: 129px;
+    }
+{% endblock %}
+
+{% block content %}
+    <div class="form-wrapper">
+        <form method="post" class="form">
+            <h3 class="form-heading">Register To Auth0
+                <a href="{{ url_for('main.home') }}" title="Back to homepage">
+                    <i class="fa fa-home float-right"></i></a></h3>
+            <fieldset>
+            <div class="form-group">
+                <label for="email">Email</label>
+                {% if form.email.errors %}
+                        {{ form.email(class="form-control form-control-lg is-invalid", placeholder='Email', autofocus = true) }}
+                        <div class="invalid-feedback">
+                            {% for error in form.email.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                {% else %}
+                        {{ form.email(class="form-control form-control-lg", placeholder='Email', autofocus = true) }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                {% if form.password.errors %}
+                        {{ form.password(class="form-control form-control-lg is-invalid", placeholder='Password', autofocus = true) }}
+                        <div class="invalid-feedback">
+                            {% for error in form.password.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                {% else %}
+                        {{ form.password(class="form-control form-control-lg", placeholder='Password', autofocus = true) }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="password">Confirm Password</label>
+                {% if form.confirm_password.errors %}
+                        {{ form.confirm_password(class="form-control form-control-lg is-invalid", placeholder='Confirm Password', autofocus = true) }}
+                        <div class="invalid-feedback">
+                            {% for error in form.confirm_password.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                {% else %}
+                        {{ form.confirm_password(class="form-control form-control-lg", placeholder='Confirm Password', autofocus = true) }}
+                {% endif %}
+            </div>
+            </fieldset>
+            <div class="form-group mt-2">
+                {{ form.submit(class_ = 'btn btn-outline-info') }}
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

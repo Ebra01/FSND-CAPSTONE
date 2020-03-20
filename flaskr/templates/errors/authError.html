@@ -1,0 +1,8 @@
+{% extends "layouts/layout.html" %}
+
+{% block content %}
+    <div class="container mt-5" >
+        <h1>{{ error[1] }} ({{ status_code }})</h1>
+        <p>{{ error[0] }}.</p>
+    </div>
+{% endblock content %}
