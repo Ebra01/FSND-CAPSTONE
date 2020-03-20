@@ -7,6 +7,17 @@ errors = Blueprint('errors', __name__)
 
 @errors.app_errorhandler(404)
 def error_404(error):
+    """
+        Check if the request header
+        (Content-Type) is {application/json}.
+
+        If Content-Type = application/json,
+        we request and return data as JSON objects.
+
+        If Content-Type != application/json,
+        we use templates (HTML) to request and return data
+
+    """
     content_type = request.headers.get('Content-Type')
     if content_type == 'application/json':
 
@@ -21,6 +32,17 @@ def error_404(error):
 
 @errors.app_errorhandler(400)
 def error_400(error):
+    """
+        Check if the request header
+        (Content-Type) is {application/json}.
+
+        If Content-Type = application/json,
+        we request and return data as JSON objects.
+
+        If Content-Type != application/json,
+        we use templates (HTML) to request and return data
+
+    """
     content_type = request.headers.get('Content-Type')
     if content_type == 'application/json':
 
@@ -35,6 +57,17 @@ def error_400(error):
 
 @errors.app_errorhandler(405)
 def error_405(error):
+    """
+        Check if the request header
+        (Content-Type) is {application/json}.
+
+        If Content-Type = application/json,
+        we request and return data as JSON objects.
+
+        If Content-Type != application/json,
+        we use templates (HTML) to request and return data
+
+    """
     content_type = request.headers.get('Content-Type')
     if content_type == 'application/json':
 
@@ -49,6 +82,17 @@ def error_405(error):
 
 @errors.app_errorhandler(422)
 def error_422(error):
+    """
+        Check if the request header
+        (Content-Type) is {application/json}.
+
+        If Content-Type = application/json,
+        we request and return data as JSON objects.
+
+        If Content-Type != application/json,
+        we use templates (HTML) to request and return data
+
+    """
     content_type = request.headers.get('Content-Type')
     if content_type == 'application/json':
 
@@ -63,6 +107,17 @@ def error_422(error):
 
 @errors.app_errorhandler(AuthError)
 def authentification_failed(autherror):
+    """
+    Check if the request header
+    (Content-Type) is {application/json}.
+
+    If Content-Type = application/json,
+    we request and return data as JSON objects.
+
+    If Content-Type != application/json,
+    we use templates (HTML) to request and return data
+
+    """
     error = autherrorhandler(autherror.error, 'authorization error')
     status_code = autherror.status_code
 

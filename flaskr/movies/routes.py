@@ -10,6 +10,10 @@ movie = Blueprint('movies', __name__)
 
 # functions
 def get_availability(release_date):
+    """
+    This function adds 7 days to the release day,
+    which is when the movie stops being shown in theaters
+    """
     format = "%Y-%m-%d %H:%M"
     rd = datetime.strptime(release_date, format)
 
@@ -22,6 +26,17 @@ def get_availability(release_date):
 @movie.route('/movies')
 @requires_auth(permission='get:movies')
 def get_movies(payload):
+    """
+    Check if the request header
+    (Content-Type) is {application/json}.
+
+    If Content-Type = application/json,
+    we request and return data as JSON objects.
+
+    If Content-Type != application/json,
+    we use templates (HTML) to request and return data
+
+    """
     movies = Movies.query.order_by(Movies.id).all()
     current = [m.display() for m in movies]
 
@@ -39,6 +54,8 @@ def get_movies(payload):
         })
 
     else:
+        # Here is a simple logic to check if the movie is already
+        # released, coming later, or finished.
         now = str(datetime.now())
         now = datetime.strptime(now[:19], '%Y-%m-%d %H:%M:%S')
 
@@ -64,6 +81,17 @@ def get_movies(payload):
 @movie.route('/movies/<int:movie_id>')
 @requires_auth(permission='get:movies')
 def get_movie(payload, movie_id):
+    """
+    Check if the request header
+    (Content-Type) is {application/json}.
+
+    If Content-Type = application/json,
+    we request and return data as JSON objects.
+
+    If Content-Type != application/json,
+    we use templates (HTML) to request and return data
+
+    """
     movie_ = Movies.query.filter(Movies.id == movie_id).first()
 
     if not movie_:
@@ -90,6 +118,9 @@ def get_movie(payload, movie_id):
 @movie.route('/movies', methods=['POST'])
 @requires_auth(permission='post:movies')
 def create_movies(payload):
+    """
+    Here We only use JSON object to request and return data
+    """
     body = request.get_json()
 
     if not body:
@@ -123,6 +154,17 @@ def create_movies(payload):
 @movie.route('/movies/<int:movie_id>', methods=['DELETE', 'POST'])
 @requires_auth(permission='delete:movies')
 def delete_movies(payload, movie_id):
+    """
+    Check if the request header
+    (Content-Type) is {application/json}.
+
+    If Content-Type = application/json,
+    we request and return data as JSON objects.
+
+    If Content-Type != application/json,
+    we use templates (HTML) to request and return data
+
+    """
     movies = Movies.query.filter(Movies.id == movie_id).first()
 
     if not movies:
@@ -154,6 +196,9 @@ def delete_movies(payload, movie_id):
 @movie.route('/movies/<int:movie_id>', methods=['PATCH'])
 @requires_auth(permission='patch:movies')
 def update_movies(payload, movie_id):
+    """
+    Here We only use JSON object to request and return data
+    """
     movies = Movies.query.filter(Movies.id == movie_id).first()
 
     if not movies:
@@ -196,6 +241,9 @@ def update_movies(payload, movie_id):
 @movie.route("/movies/create", methods=['GET'])
 @requires_auth(permission='post:movies')
 def create_movies_form(payload):
+    """
+    Here we render the forms/new_movie.html template
+    """
     form = MoviesForm()
     return render_template('forms/new_movie.html',
                            form=form, title='New Movie')
@@ -204,6 +252,9 @@ def create_movies_form(payload):
 @movie.route("/movies/create", methods=['POST'])
 @requires_auth(permission='post:movies')
 def create_movies_submission(payload):
+    """
+    Here we use MoviesForm to request, send, and validate data
+    """
     form = MoviesForm()
     if form.validate_on_submit():
 
@@ -219,6 +270,7 @@ def create_movies_submission(payload):
               'success')
         return redirect(url_for('movies.get_movies'))
     else:
+        # Here we check the error type to give the user a specific info
         if 'title' in form.errors:
             error = 'Title must be a String'
         else:
@@ -232,6 +284,10 @@ def create_movies_submission(payload):
 @movie.route('/movies/<int:movie_id>/edit', methods=['GET'])
 @requires_auth(permission='patch:movies')
 def update_movies_form(payload, movie_id):
+    """
+    Here we render the forms/edit_movie.html template,
+    with filled fields from previous data
+    """
     form = MoviesForm()
 
     movie_ = Movies.query.filter(Movies.id == movie_id).first()
@@ -256,6 +312,9 @@ def update_movies_form(payload, movie_id):
 @movie.route('/movies/<int:movie_id>/edit', methods=['POST'])
 @requires_auth(permission='patch:movies')
 def update_movies_submission(payload, movie_id):
+    """
+    Here we use MoviesForm to request, update, and validate data
+    """
     form = MoviesForm()
 
     movie_ = Movies.query.filter(Movies.id == movie_id).first()

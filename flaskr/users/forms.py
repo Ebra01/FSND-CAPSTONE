@@ -6,6 +6,10 @@ from flaskr.models.models import Users
 
 
 class LoginForm(FlaskForm):
+    """
+    LoginForm designed to log-in a user directly to auth0
+    with no need for auth0 login interface
+    """
     def __init__(self, *args, **kwargs):
         kwargs['csrf_enabled'] = False
         super(LoginForm, self).__init__(*args, **kwargs)
@@ -19,6 +23,10 @@ class LoginForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
+    """
+    RegistrationForm designed to register a user directly to auth0
+    with no need for auth0 register interface
+    """
     def __init__(self, *args, **kwargs):
         kwargs['csrf_enabled'] = False
         super(RegistrationForm, self).__init__(*args, **kwargs)
@@ -34,7 +42,10 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Sign Up')
 
     def validate_password(self, password):
-
+        """
+        Validate if password contains at least one uppercase,
+        one lowercase, and one digit.
+        """
         passw = password.data
 
         if not any(p.isupper() for p in passw):
@@ -48,6 +59,9 @@ class RegistrationForm(FlaskForm):
                 'Password must have at least one digit.')
 
     def validate_email(self, email):
+        """
+        Check if the email is already registered in the DB.
+        """
         user = Users.query.filter_by(email=email.data).first()
 
         if user:

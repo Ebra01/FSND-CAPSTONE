@@ -10,6 +10,9 @@ class MoviesForm(FlaskForm):
         super(MoviesForm, self).__init__(*args, **kwargs)
 
     def validate_release_date(self, release_date):
+        """
+        Check if the release date matches the format (YYYY-MM-DD HH:MM)
+        """
         rd = release_date.data
         if not datetime.strptime(rd, '%Y-%m-%d %H:%M'):
             raise ValidationError(

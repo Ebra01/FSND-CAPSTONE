@@ -25,6 +25,10 @@ class AuthError(Exception):
 
 
 def autherrorhandler(error, default_message):
+    """
+    Here we handle error's code, message,
+     and status to then send it to errors/handlers.py
+    """
 
     try:
         return error['description'], error['code']
@@ -35,6 +39,17 @@ def autherrorhandler(error, default_message):
 # Auth Header
 
 def get_token_auth_header():
+    """
+    Check if the request header
+    (Content-Type) is {application/json}.
+
+    If Content-Type = application/json,
+    we request and return data as JSON objects.
+
+    If Content-Type != application/json,
+    we use JWT Table to get current user' access_token by their id.
+
+    """
 
     content_type = request.headers.get('Content-Type')
 
@@ -72,6 +87,7 @@ def get_token_auth_header():
         return token
     else:
         try:
+            # Here we get the token from JWT Table by giving current_user's id
             token = JWT.query.filter_by(user_id=current_user.id).first()
             token = token.display()
             access_token = token['access_token']
@@ -91,6 +107,15 @@ def get_token_auth_header():
 
 
 def check_permissions(permission, payload):
+    """
+    Check if permissions is in the payload (user's access token)
+
+    if not raise authentication error
+
+    if it instanced we check if this user have
+    the required permission to access an endpoint
+
+    """
     if 'permissions' not in payload:
         raise AuthError({
             'code': 'Invalid Claims',
@@ -105,10 +130,11 @@ def check_permissions(permission, payload):
 
     return True
 
-    # raise Exception('Not Implemented')
-
 
 def verify_decode_jwt(token):
+    """
+    Here we verify the decode jwt using Auth0's logic
+    """
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
     jwks = json.loads(jsonurl.read())
     unverified_header = jwt.get_unverified_header(token)
@@ -168,6 +194,11 @@ def verify_decode_jwt(token):
 
 
 def requires_auth(permission=''):
+    """
+    Here we have a decorator to request,
+    and send permissions and
+    check if the user is valid to access a certain endpoint
+    """
     def requires_auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):

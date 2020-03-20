@@ -11,6 +11,17 @@ actor = Blueprint('actors', __name__)
 @actor.route('/actors')
 @requires_auth(permission='get:actors')
 def get_actors(payload):
+    """
+    Check if the request header
+    (Content-Type) is {application/json}.
+
+    If Content-Type = application/json,
+    we request and return data as JSON objects.
+
+    If Content-Type != application/json,
+    we use templates (HTML) to request and return data
+
+    """
 
     actors_ = Actors.query.order_by(Actors.id).all()
     current = [a.display() for a in actors_]
@@ -29,6 +40,7 @@ def get_actors(payload):
         })
 
     else:
+
         actors = []
         actresses = []
         for items in current:
@@ -43,6 +55,17 @@ def get_actors(payload):
 @actor.route('/actors/<int:actor_id>')
 @requires_auth(permission='get:actors')
 def get_actor(payload, actor_id):
+    """
+    Check if the request header
+    (Content-Type) is {application/json}.
+
+    If Content-Type = application/json,
+    we request and return data as JSON objects.
+
+    If Content-Type != application/json,
+    we use templates (HTML) to request and return data
+
+    """
     actor_ = Actors.query.filter(Actors.id == actor_id).first()
 
     if not actor_:
@@ -53,6 +76,7 @@ def get_actor(payload, actor_id):
         content_type = request.headers.get('Content-Type')
 
         if content_type == 'application/json':
+
             return jsonify({
                 'title': f"Actor {current['name']}'s Page",
                 'body': current,
@@ -69,6 +93,11 @@ def get_actor(payload, actor_id):
 @actor.route('/actors', methods=['POST'])
 @requires_auth(permission='post:actors')
 def create_actors(payload):
+
+    """
+    Here We only use JSON object to request and return data
+    """
+
     body = request.get_json()
 
     if not body:
@@ -102,6 +131,17 @@ def create_actors(payload):
 @actor.route('/actors/<int:actor_id>', methods=['DELETE', 'POST'])
 @requires_auth(permission='delete:actors')
 def delete_actors(payload, actor_id):
+    """
+    Check if the request header
+    (Content-Type) is {application/json}.
+
+    If Content-Type = application/json,
+    we request and return data as JSON objects.
+
+    If Content-Type != application/json,
+    we use templates (HTML) to request and return data
+
+    """
     actors = Actors.query.filter(Actors.id == actor_id).first()
 
     if not actors:
@@ -138,6 +178,9 @@ def delete_actors(payload, actor_id):
 @actor.route('/actors/<int:actor_id>', methods=['PATCH'])
 @requires_auth(permission='patch:actors')
 def update_actors(payload, actor_id):
+    """
+    Here We only use JSON object to request and return data
+    """
     actors = Actors.query.filter(Actors.id == actor_id).first()
 
     if not actors:
@@ -181,6 +224,9 @@ def update_actors(payload, actor_id):
 @actor.route('/actors/create', methods=['GET'])
 @requires_auth(permission='post:actors')
 def create_actors_form(payload):
+    """
+    Here we render the forms/new_actor.html template
+    """
     form = ActorsForm()
     return render_template('forms/new_actor.html', form=form,
                            title='New Actor')
@@ -189,6 +235,9 @@ def create_actors_form(payload):
 @actor.route('/actors/create', methods=['POST'])
 @requires_auth(permission='post:actors')
 def create_actors_submission(payload):
+    """
+    Here we use ActorsForm to request, send, and validate data
+    """
     form = ActorsForm()
     if form.validate_on_submit():
         try:
@@ -200,6 +249,7 @@ def create_actors_submission(payload):
             )
 
             a.insert()
+            # Here we use a sorting system for actors, and actresses
             if request.form['gender'] == 'male':
                 flash(f'Actor {name} has been listed successfully!',
                       'success')
@@ -211,6 +261,7 @@ def create_actors_submission(payload):
             print(e)
             flash('Cannot Create A New Actor!', 'danger')
     else:
+        # Here we check the error type to give the user a specific info
         if 'age' in form.errors:
             error = 'Age must be an integer'
         else:
@@ -224,6 +275,10 @@ def create_actors_submission(payload):
 @actor.route('/actors/<int:actor_id>/edit', methods=['GET'])
 @requires_auth(permission='patch:actors')
 def update_actors_form(payload, actor_id):
+    """
+    Here we render the forms/edit_actor.html template,
+    with filled fields from previous data
+    """
     form = ActorsForm()
 
     actor_ = Actors.query.filter(Actors.id == actor_id).first()
@@ -255,6 +310,9 @@ def update_actors_form(payload, actor_id):
 @actor.route('/actors/<int:actor_id>/edit', methods=['POST'])
 @requires_auth(permission='patch:actors')
 def update_actors_submission(payload, actor_id):
+    """
+    Here we use ActorsForm to request, update, and validate data
+    """
     form = ActorsForm()
 
     actor_ = Actors.query.filter(Actors.id == actor_id).first()
@@ -264,6 +322,8 @@ def update_actors_submission(payload, actor_id):
     current = actor_.display()
 
     try:
+        # Here we combine first_name,
+        # and last_name fields to insert it as (name) in Actors Table
         name = f'{request.form["first_name"]} {request.form["last_name"]}'
         if form.validate_on_submit():
 
@@ -272,12 +332,14 @@ def update_actors_submission(payload, actor_id):
             actor_.gender = request.form['gender']
 
             actor_.update()
+            # Here we use a sorting system for actors, and actresses
             if actor_.gender == 'male':
                 flash(f'Actor {name} was successfully updated!', 'success')
             else:
                 flash(f'Actress {name} was successfully updated!', 'success')
             return redirect(url_for('actors.get_actor', actor_id=actor_id))
         else:
+            # Here we use a sorting system for actors, and actresses
             if request.form['gender'] == 'male':
                 flash(f'An error occurred. Actor {current["name"]}'
                       f' could not be updated!', 'warning')

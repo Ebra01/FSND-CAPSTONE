@@ -8,6 +8,9 @@ database_path = os.environ.get('DATABASE_URL')
 
 
 def setup_db(app, db_path=database_path):
+    """
+    Setting up Database
+    """
     app.config['SQLALCHEMY_DATABASE_URI'] = db_path
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = os.getenv('CAPSTONE_SECRET')
@@ -17,6 +20,10 @@ def setup_db(app, db_path=database_path):
 
 
 class Actors(db.Model):
+    """
+    Actors Table, including insert, update,
+     and delete functions to make CRUD process easier
+    """
     __tablename__ = 'actors'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False)
@@ -52,6 +59,10 @@ class Actors(db.Model):
 
 
 class Movies(db.Model):
+    """
+    Movies Table, including insert, update,
+    and delete functions to make CRUD process easier
+    """
     __tablename__ = 'movies'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), nullable=False)
@@ -88,6 +99,14 @@ class Movies(db.Model):
 
 
 class JWT(db.Model):
+    """
+    JWT Table, including insert,and delete
+    functions to make CRUD process easier.
+
+    This Table stores user's access token and id
+    to make it easier to access endpoints in the frontend,
+     both access token and id get deleted after logging out
+    """
     __tablename__ = 'jwt'
     id = db.Column(db.Integer, primary_key=True)
     access_token = db.Column(db.String, nullable=False)
@@ -113,6 +132,15 @@ class JWT(db.Model):
 
 
 class Users(db.Model, UserMixin):
+    """
+    Actors Table, including insert, update,
+    and delete functions to make CRUD process easier.
+
+    This Table stores both the email and the hashed password of a user
+    once they register, or log in with their auth0 account
+    for the first time, this table make it easier to identify
+    which access token belongs to whom
+    """
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String, unique=True, nullable=False)

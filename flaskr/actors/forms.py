@@ -9,20 +9,18 @@ class ActorsForm(FlaskForm):
         super(ActorsForm, self).__init__(*args, **kwargs)
 
     def validate_first_name(self, first_name):
-        numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-        data = first_name.data
+        """ check if the name contain numbers, symbols or unknown shapes"""
 
-        for n in numbers:
-            if n in data:
-                raise ValidationError("Name must be a String!")
+        data = first_name.data
+        if not data.isalpha():
+            raise ValidationError("Name must be a String!")
 
     def validate_last_name(self, last_name):
-        numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+        """ check if the name contain numbers, symbols or unknown shapes"""
         data = last_name.data
 
-        for n in numbers:
-            if n in data:
-                raise ValidationError("Name must be a String!")
+        if not data.isalpha():
+            raise ValidationError("Name must be a String!")
 
     first_name = StringField(
         'first_name', validators=[DataRequired()]
