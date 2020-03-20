@@ -200,7 +200,7 @@ def create_actors_submission(payload):
                 flash(f'Actor {name} has been listed successfully!', 'success')
             else:
                 flash(f'Actress {name} has been listed successfully!', 'success')
-            return redirect(url_for('main.home'))
+            return redirect(url_for('actors.get_actors'))
         except Exception as e:
             print(e)
             flash('Cannot Create A New Actor!', 'danger')
