@@ -226,7 +226,7 @@ Can be accessed by Executive Producer
     * Returns Movies as Movie objects, success value, and title
     
 
-* Sample: `curl -X POST -H "Authorization: Bearer <AccessToken>" -H "Content-Type: application/json" http://127.0.0.1:5000/actors -d '{"title":"FSND", "release_date": "2020-05-12 19:00"}'`
+* Sample: `curl -X POST -H "Authorization: Bearer <AccessToken>" -H "Content-Type: application/json" http://127.0.0.1:5000/movies -d '{"title":"FSND", "release_date": "2020-05-12 19:00"}'`
 
 ###### Response : 
 
